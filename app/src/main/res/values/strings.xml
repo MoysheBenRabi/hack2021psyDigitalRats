@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">test_test</string>
+    <string name="accessibility_service_label">Utsu service</string>
+    <string name="accessibility_service_description">my desc</string>
+</resources>
