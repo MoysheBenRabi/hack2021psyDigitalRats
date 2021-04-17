@@ -13,13 +13,13 @@ public class MyAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         Log.e(TAG, "onAccessibilityEvent: ");
-
         String packageName = event.getPackageName().toString();
         PackageManager packageManager = this.getPackageManager();
         try {
             ApplicationInfo applicationInfo = packageManager.getApplicationInfo(packageName, 0);
-            CharSequence applicationLabel = packageManager.getApplicationLabel(applicationInfo);
-            Log.e(TAG, "onAccessibilityEvent: "+applicationLabel );
+            CharSequence testlabel = packageManager.getApplicationLabel(applicationInfo);
+            Log.e(TAG, "Utsustest: "+testlabel );
+
 
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -44,10 +44,10 @@ public class MyAccessibilityService extends AccessibilityService {
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_SPOKEN;
 
 
-        info.notificationTimeout = 100;
+        info.notificationTimeout = 10;
 
         this.setServiceInfo(info);
 
-        Log.e(TAG,"OnserverConnected: ");x
+        Log.e(TAG,"OnserverConnected: ");
     }
 }
