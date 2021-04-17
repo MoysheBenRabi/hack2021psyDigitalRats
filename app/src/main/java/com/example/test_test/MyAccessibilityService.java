@@ -12,13 +12,13 @@ public class MyAccessibilityService extends AccessibilityService {
     private static final String TAG = "MyAccessibilityService";
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        Log.e(TAG, "onAccessibilityEvent: ");
+        Log.e(TAG, "UtsustestonAccessibilityEvent: ");
         String packageName = event.getPackageName().toString();
         PackageManager packageManager = this.getPackageManager();
         try {
             ApplicationInfo applicationInfo = packageManager.getApplicationInfo(packageName, 0);
             CharSequence testlabel = packageManager.getApplicationLabel(applicationInfo);
-            Log.e(TAG, "Utsustest: "+testlabel );
+            Log.e(TAG, "app name is: "+testlabel );
 
 
         } catch (PackageManager.NameNotFoundException e) {
@@ -40,14 +40,16 @@ public class MyAccessibilityService extends AccessibilityService {
         info.eventTypes = AccessibilityEvent.TYPE_VIEW_CLICKED |
                 AccessibilityEvent.TYPE_VIEW_FOCUSED;
 
+
         // Set the type of feedback your service will provide.
         info.feedbackType = AccessibilityServiceInfo.FEEDBACK_SPOKEN;
 
 
-        info.notificationTimeout = 10;
+        info.notificationTimeout = 100;
 
         this.setServiceInfo(info);
 
-        Log.e(TAG,"OnserverConnected: ");
+
+        Log.e(TAG,"UtsustestOnserverConnected: ");
     }
 }
