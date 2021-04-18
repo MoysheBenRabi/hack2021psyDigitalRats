@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 String texttext1 = "Тестовый запуск";
                 text_text1.setText(texttext1);
                 RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-                String url ="http://dyvniy.ru:9000/api?id=42";
+                String url ="https://accessibilitylistner.herokuapp.com/api?id=42";
 
 
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
