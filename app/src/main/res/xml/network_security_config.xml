@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">http://dyvniy.ru:9000/api</domain>
+        <base-config cleartextTrafficPermitted="false"/>
+    </domain-config>
+</network-security-config>

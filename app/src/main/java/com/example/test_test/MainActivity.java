@@ -20,6 +20,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -29,15 +30,31 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import retrofit2.http.GET;
 
 
+
+
+
 public class MainActivity extends AppCompatActivity {
+
+
+
+
+
     private Button getTask;
     private TextView textView;
-
-
+    private  TextView text_text1;
 
 
 
@@ -46,19 +63,27 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        String TAG = "234";
+
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         allowPermission = findViewById(R.id.allowPermission);
         textView = findViewById(R.id.text_text);
         getTask = findViewById(R.id.getTasks);
+        text_text1 = findViewById(R.id.text_text1);
 
         getTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                String texttext1 = "Тестовый запуск";
+                text_text1.setText(texttext1);
                 RequestQueue queue = Volley.newRequestQueue(MainActivity.this);
-                String url ="https://mocki.io/v1/fe844492-a58d-4861-bb35-3d9a665813cb";
+                String url ="http://dyvniy.ru:9000/api?id=42";
 
 
                 JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
@@ -69,7 +94,14 @@ public class MainActivity extends AppCompatActivity {
 
                                     @Override
                                     public void onResponse(JSONObject response) {
-                                        textView.setText("Response: " + response.toString());
+                                        try {
+                                            textView.setText("Response: " + response.get("tasks"));
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            Log.e(TAG,"te"+e);
+                                        }
+
+
                                     }
                                 },
                                 new Response.ErrorListener() {
@@ -77,7 +109,8 @@ public class MainActivity extends AppCompatActivity {
                                     @Override
                                     public void onErrorResponse(VolleyError error) {
                                         // TODO: Handle error
-
+                                        textView.setText(R.string.test);
+                                       Log.e(TAG,"t"+error);
                                     }
 
                                 });
